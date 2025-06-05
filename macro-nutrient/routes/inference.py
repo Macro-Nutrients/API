@@ -6,6 +6,7 @@ import uuid
 from tensorflow.keras.preprocessing.image import img_to_array
 from google.cloud import firestore
 from services.store_data import store_data
+import json
 
 inference_bp = Blueprint('inference', __name__)
 
@@ -38,13 +39,30 @@ def predict():
         confidence = float(preds[0][idx])
 
         doc_id = uuid.uuid4().hex
+
+        with open('dataset/nutrition_fact.json', 'r', encoding='utf-8') as f:
+            nutrition_data = json.load(f)
+
+        nutrition_info = next((item for item in nutrition_data if item.get('name') == label), None)
+        
+        # Mutasi object nutrition_info jika ditemukan
+        if nutrition_info:
+            nutrition_info = {
+                "name": nutrition_info.get("name").capitalize().replace('_', ' '),
+                "calories": nutrition_info.get("calories") + ' kcal ',
+                "protein": nutrition_info.get("protein") + ' gram',
+                "carbohydrates": nutrition_info.get("carbohydrates") + ' gram',
+                "fat": nutrition_info.get("fat") + ' gram',
+            }
+
         store_data("predictions", doc_id, {
             "label": label,
             "confidence": confidence,
-            "timestamp": firestore.SERVER_TIMESTAMP
+            "timestamp": firestore.SERVER_TIMESTAMP,
+            "facts": nutrition_info
         })
 
-        return jsonify(error=False, result={"label": label, "confidence": confidence}), 200
+        return jsonify(error=False, result={"label": label, "confidence": confidence, "facts":nutrition_info}), 200
     except Exception as e:
         current_app.logger.error(f"[PREDICT ERROR] {e}")
         return jsonify(error=True, message="Gagal melakukan prediksi"), 500
