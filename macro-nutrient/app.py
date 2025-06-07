@@ -114,6 +114,7 @@ from google.auth import exceptions
 from routes.auth import auth_bp
 from routes.inference import inference_bp
 from tensorflow.keras.models import load_model
+from google.cloud import storage
 
 # Inisialisasi Firestore client
 try:
@@ -132,6 +133,14 @@ cors = CorsConfig(app=app)
 # Inisialisasi JWT
 jwt = JWTManager(app)
 
+# setup Google Cloud Storage
+GCS_BUCKET_NAME = os.getenv("GCS_BUCKET_NAME", "macro-nutrient-bucket")
+
+# insialisasi Google Cloud Storage client
+gcs_client = storage.Client()
+bucket = gcs_client.bucket(GCS_BUCKET_NAME)
+
+
 # Load Keras model once here
 MODEL_PATH = os.path.join(os.path.dirname(__file__), "model/modelsl_saved_model.keras")
 try:
@@ -143,6 +152,9 @@ except Exception as e:
 
 # Attach model to app context so it can be accessed from routes
 app.config['KERAS_MODEL'] = keras_model
+
+# disable json sorted
+app.json.sort_keys = False
 
 # Register blueprints
 app.register_blueprint(auth_bp, url_prefix="/auth")
