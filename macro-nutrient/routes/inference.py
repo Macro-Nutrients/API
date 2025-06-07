@@ -59,6 +59,8 @@ def predict():
                 "protein": str(nutrition_info.get("protein")) + ' gram',
                 "carbohydrates": str(nutrition_info.get("carbohydrates")) + ' gram',
                 "fat": str(nutrition_info.get("fat")) + ' gram',
+                "gi": nutrition_info.get("gi"),
+                "gl": nutrition_info.get("gl"),
             }
 
         store_data("predictions", doc_id, {
