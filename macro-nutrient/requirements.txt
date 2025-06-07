@@ -6,3 +6,4 @@ gunicorn
 tensorflow>=2.8,<2.15
 protobuf<=3.20.3
 Pillow
+flask-cors>=6.0.0

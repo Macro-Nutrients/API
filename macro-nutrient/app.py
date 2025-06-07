@@ -108,7 +108,7 @@
 import os
 from flask import Flask, g
 from flask_jwt_extended import JWTManager
-from config import Config
+from config import Config, CorsConfig
 from google.cloud import firestore
 from google.auth import exceptions
 from routes.auth import auth_bp
@@ -125,6 +125,9 @@ except exceptions.DefaultCredentialsError as e:
 # Setup Flask app
 app = Flask(__name__)
 app.config.from_object(Config)
+
+# setup CORS
+cors = CorsConfig(app=app)
 
 # Inisialisasi JWT
 jwt = JWTManager(app)
