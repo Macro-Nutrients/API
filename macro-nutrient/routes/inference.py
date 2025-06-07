@@ -42,7 +42,8 @@ def predict():
         preds = keras_model.predict(x)
         idx = int(np.argmax(preds[0]))
         label = CLASS_NAMES[idx]
-        confidence = float(preds[0][idx])
+        confidence = round(float(preds[0][idx]) * 100, 2)
+        confidence_with_percent = f"{confidence}%"
 
         doc_id = uuid.uuid4().hex
 
@@ -74,7 +75,7 @@ def predict():
             }
         })
 
-        return jsonify(error=False, result={"label": label, "confidence": confidence, "facts":nutrition_info, "filename":filename, "public_url":url}), 200
+        return jsonify(error=False, result={"label": label, "confidence": confidence_with_percent, "facts":nutrition_info, "filename":filename, "public_url":url}), 200
     except Exception as e:
         current_app.logger.error(f"[PREDICT ERROR] {e}")
         return jsonify(error=True, message="Gagal melakukan prediksi"), 500
