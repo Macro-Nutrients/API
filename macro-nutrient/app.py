@@ -144,6 +144,9 @@ except Exception as e:
 # Attach model to app context so it can be accessed from routes
 app.config['KERAS_MODEL'] = keras_model
 
+# disable json sorted
+app.json.sort_keys = False
+
 # Register blueprints
 app.register_blueprint(auth_bp, url_prefix="/auth")
 app.register_blueprint(inference_bp, url_prefix="/inference")
