@@ -49,10 +49,10 @@ def predict():
         if nutrition_info:
             nutrition_info = {
                 "name": nutrition_info.get("name").capitalize().replace('_', ' '),
-                "calories": nutrition_info.get("calories") + ' kcal ',
-                "protein": nutrition_info.get("protein") + ' gram',
-                "carbohydrates": nutrition_info.get("carbohydrates") + ' gram',
-                "fat": nutrition_info.get("fat") + ' gram',
+                "calories": str(nutrition_info.get("calories")) + ' kcal ',
+                "protein": str(nutrition_info.get("protein")) + ' gram',
+                "carbohydrates": str(nutrition_info.get("carbohydrates")) + ' gram',
+                "fat": str(nutrition_info.get("fat")) + ' gram',
             }
 
         store_data("predictions", doc_id, {
